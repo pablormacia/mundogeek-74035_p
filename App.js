@@ -1,37 +1,41 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, FlatList, Text,Image, View } from 'react-native';
-import Header from './src/components/Header';
-import categories from './src/data/categories.json'
-import FlatCard from './src/components/FlatCard';
+import { useState, useEffect } from 'react';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import { NavigationContainer } from '@react-navigation/native';
+import RootStack from './src/navigation/Navigator';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  const renderCategoryItem = ({ item }) => (
-    <FlatCard>
-      <View style={styles.categoryContainer}>
-        <Text>{item.title}</Text>
-        <Image width={80} height={40} source={{uri:item.image}} />
-      </View>
-    </FlatCard>
+  
+  [categorySelected, setCategorySelected] = useState("consolas")
+  const [loaded, error] = useFonts({
+    'Karla-Bold': require('./assets/fonts/Karla-Bold.ttf'),
+    'Karla-Regular': require('./assets/fonts/Karla-Regular.ttf'),
+    'Karla-Light': require('./assets/fonts/Karla-Light.ttf'),
+    'Karla-Italic': require('./assets/fonts/Karla-Italic.ttf'),
+    'PressStart-Regular': require('./assets/fonts/PressStart2P-Regular.ttf'),
+  });
 
-  )
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
+    return null;
+  }
+
   return (
     <>
-      <Header title="Mundo Geek" />
-      <FlatList
-        data={categories}
-        renderItem={renderCategoryItem}
-        keyExtractor={item => item.id}
-      />
-      <StatusBar style="light" />
+    <StatusBar style='light' />
+    <NavigationContainer>
+      <RootStack />
+    </NavigationContainer>
     </>
+    
   );
 }
 
-const styles = StyleSheet.create({
-  categoryContainer:{
-    flexDirection:"row",
-    justifyContent:"space-between",
-    alignItems:"center",
-    gap:8
-  }
-});

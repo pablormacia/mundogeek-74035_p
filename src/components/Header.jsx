@@ -1,10 +1,26 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { colors } from '../global/colors'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import {useNavigation } from '@react-navigation/native'
 
-const Header = ({title}) => {
+const Header = ({title,subtitle}) => {
+  const navigation = useNavigation()
+  const canGoBack = navigation.canGoBack();
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
+      <Text style={styles.subtitle}>{subtitle}</Text>
+      {
+        canGoBack
+        &&
+        <Pressable 
+        onPress={()=>navigation.goBack()}
+        style={styles.gobackIcon}>
+        <Ionicons name="arrow-back-circle-outline" color={colors.white} size={24} />
+      </Pressable>
+      }
+      
     </View>
   )
 }
@@ -13,13 +29,24 @@ export default Header
 
 const styles = StyleSheet.create({
     container:{
-        height:200,
+        height:150,
         justifyContent:"center",
         alignItems:"center",
         backgroundColor:colors.darkGray
     },
     title:{
-        fontSize:24,
+        fontSize:16,
+        fontFamily: 'PressStart-Regular',
         color:colors.white
+    },
+    subtitle:{
+      fontSize:14,
+        fontFamily: 'PressStart-Regular',
+        color:colors.white
+    },
+    gobackIcon:{
+      position:"absolute",
+      bottom:8,
+      left:8
     }
 })
