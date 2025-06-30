@@ -2,8 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { NavigationContainer } from '@react-navigation/native';
-import RootStack from './src/navigation/Navigator';
+import TabsNavigator from './src/navigation/TabsNavigator';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,9 +30,7 @@ export default function App() {
   return (
     <>
     <StatusBar style='light' />
-    <NavigationContainer>
-      <RootStack />
-    </NavigationContainer>
+    <TabsNavigator />
     </>
     
   );

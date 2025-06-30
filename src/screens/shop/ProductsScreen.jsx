@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native'
+import { StyleSheet, Text, View, FlatList, Pressable } from 'react-native'
 import products from '../../data/products.json'
 import FlatCard from '../../components/FlatCard'
 import { useEffect, useState } from 'react'
 import SearchBox from '../../components/SearchBox'
 
-const ProductsScreen = ({ route }) => {
+const ProductsScreen = ({ navigation,route }) => {
     [productsFiltered, setProductsFiltered] = useState([])
     const [keywordInput, setKeywordInput] = useState("")
     const { category } = route.params
@@ -24,7 +24,9 @@ const ProductsScreen = ({ route }) => {
 
     const renderProductItem = ({ item }) => (
         <FlatCard style={styles.productContainer}>
+            <Pressable onPress={()=>navigation.navigate("Producto",{product:item})}>
             <Text>{item.title}</Text>
+            </Pressable>
         </FlatCard>
     )
 

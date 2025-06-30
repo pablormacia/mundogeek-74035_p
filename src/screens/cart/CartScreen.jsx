@@ -1,16 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const ProductScreen = ({route}) => {
-
-  const {product} = route.params
+const CartScreen = () => {
   return (
     <View>
-      <Text>{product.title}</Text>
+      <Text>CartScreen</Text>
     </View>
   )
 }
 
-export default ProductScreen
+export default CartScreen
 
 const styles = StyleSheet.create({})
