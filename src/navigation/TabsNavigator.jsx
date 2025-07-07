@@ -17,25 +17,25 @@ export default function TabsNavigator() {
                 }}
             >
                 <Tab.Screen
-                    name="Tienda"
+                    name="Shop"
                     component={ShopStackNavigator}
                     options={{
-                        tabBarIcon: ({focused}) => <Icon name="shopping-bag" size={24} color={focused?colors.darkGray:colors.lightGray} />
+                        tabBarIcon: ({focused}) => <Icon name="shopping-bag" size={24} color={focused?colors.darkGray:colors.mediumGray} />
                     }}
 
                 />
                 <Tab.Screen 
-                    name="Carrito" 
+                    name="Cart" 
                     component={CartStackNavigator}  
                     options={{
-                        tabBarIcon: ({focused}) => <Icon name="shopping-cart" size={24} color={focused?colors.darkGray:colors.lightGray} />
+                        tabBarIcon: ({focused}) => <Icon name="shopping-cart" size={24} color={focused?colors.darkGray:colors.mediumGray} />
                     }}
                     />
                 <Tab.Screen 
-                    name="Órdenes" 
+                    name="Orders" 
                     component={OrdersStackNavigator} 
                     options={{
-                        tabBarIcon: ({focused}) => <Icon name="archive" size={24} color={focused?colors.darkGray:colors.lightGray} />
+                        tabBarIcon: ({focused}) => <Icon name="archive" size={24} color={focused?colors.darkGray:colors.mediumGray} />
                     }}/>
             </Tab.Navigator>
         </NavigationContainer>

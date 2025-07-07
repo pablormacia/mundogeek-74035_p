@@ -3,11 +3,13 @@ import { useState, useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import TabsNavigator from './src/navigation/TabsNavigator';
+import { Provider } from 'react-redux';
+import store from './src/store';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  
+
   [categorySelected, setCategorySelected] = useState("consolas")
   const [loaded, error] = useFonts({
     'Karla-Bold': require('./assets/fonts/Karla-Bold.ttf'),
@@ -28,11 +30,11 @@ export default function App() {
   }
 
   return (
-    <>
-    <StatusBar style='light' />
-    <TabsNavigator />
-    </>
-    
+    <Provider store={store}>
+      <StatusBar style='light' />
+      <TabsNavigator />
+    </Provider>
+
   );
 }
 

@@ -1,18 +1,25 @@
 import { StyleSheet, Text, View, FlatList, Pressable } from 'react-native'
-import products from '../../data/products.json'
+//import products from '../../data/products.json'
 import FlatCard from '../../components/FlatCard'
 import { useEffect, useState } from 'react'
 import SearchBox from '../../components/SearchBox'
+import { useSelector,useDispatch } from 'react-redux'
+import { setProductSelected } from '../../features/shop/shopSlice'
 
 const ProductsScreen = ({ navigation,route }) => {
-    [productsFiltered, setProductsFiltered] = useState([])
+    const [productsFiltered, setProductsFiltered] = useState([])
     const [keywordInput, setKeywordInput] = useState("")
-    const { category } = route.params
 
+    //const products = useSelector(state=>state.shopReducer.products)
+    //const { category } = route.params
+    
+    const productsFilteredByCategory = useSelector(state=>state.shopReducer.productsFilteredByCategory)
     //console.log(keywordInput)
 
+    const dispatch = useDispatch()
+
     useEffect(() => {
-        const productsFilteredByCategory = products.filter(product => product.category.toLowerCase() === category.toLowerCase())
+        //const productsFilteredByCategory = products.filter(product => product.category.toLowerCase() === category.toLowerCase())
 
         if (keywordInput !== "") {
             const productsFilteredBySearch = productsFilteredByCategory.filter(product => product.title.includes(keywordInput))
@@ -20,11 +27,15 @@ const ProductsScreen = ({ navigation,route }) => {
         } else {
             setProductsFiltered(productsFilteredByCategory)
         }
-    }, [category, keywordInput])
+    }, [ keywordInput])
 
     const renderProductItem = ({ item }) => (
         <FlatCard style={styles.productContainer}>
-            <Pressable onPress={()=>navigation.navigate("Producto",{product:item})}>
+            <Pressable 
+                onPress={()=>{
+                    dispatch(setProductSelected(item))
+                    navigation.navigate("Producto",{product:item})}}
+            >
             <Text>{item.title}</Text>
             </Pressable>
         </FlatCard>
