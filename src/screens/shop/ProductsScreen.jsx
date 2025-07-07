@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import SearchBox from '../../components/SearchBox'
 import { useSelector,useDispatch } from 'react-redux'
 import { setProductSelected } from '../../features/shop/shopSlice'
+import { useGetProductsByCategoryQuery } from '../../services/shopService'
 
 const ProductsScreen = ({ navigation,route }) => {
     const [productsFiltered, setProductsFiltered] = useState([])
@@ -13,10 +14,15 @@ const ProductsScreen = ({ navigation,route }) => {
     //const products = useSelector(state=>state.shopReducer.products)
     //const { category } = route.params
     
-    const productsFilteredByCategory = useSelector(state=>state.shopReducer.productsFilteredByCategory)
+    //const productsFilteredByCategory = useSelector(state=>state.shopReducer.productsFilteredByCategory)
     //console.log(keywordInput)
 
     const dispatch = useDispatch()
+
+    const category = useSelector(state=>state.shopReducer.categorySelected)
+    //console.log(category)
+    const {data:productsFilteredByCategory, isLoading, error} = useGetProductsByCategoryQuery(category.toLowerCase())
+    //console.log(productsFilteredByCategory)
 
     useEffect(() => {
         //const productsFilteredByCategory = products.filter(product => product.category.toLowerCase() === category.toLowerCase())
@@ -27,7 +33,7 @@ const ProductsScreen = ({ navigation,route }) => {
         } else {
             setProductsFiltered(productsFilteredByCategory)
         }
-    }, [ keywordInput])
+    }, [productsFilteredByCategory, keywordInput])
 
     const renderProductItem = ({ item }) => (
         <FlatCard style={styles.productContainer}>

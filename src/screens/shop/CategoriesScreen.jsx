@@ -3,11 +3,16 @@ import { StyleSheet, FlatList, Text,Image, View,Pressable } from 'react-native';
 import FlatCard from '../../components/FlatCard'
 import { useSelector,useDispatch } from 'react-redux';
 import { setCategorySelected,filterProducts } from '../../features/shop/shopSlice';
+import { useGetCategoriesQuery } from '../../services/shopService';
 
 const CategoriesScreen = ({navigation}) => {
 
-  const categories = useSelector(state=>state.shopReducer.categories)
+  //const categories = useSelector(state=>state.shopReducer.categories)
   const dispatch = useDispatch()
+
+  const {data:categories,siLoading,error} = useGetCategoriesQuery()
+
+  //console.log(data)
 
   const renderCategoryItem = ({ item }) => (
     <Pressable
