@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { firebaseRTDBUrl } from "../firebase";
 
+const firebaseRTDBUrl = process.env.EXPO_PUBLIC_BASE_RTDB_URL
 export const shopApi = createApi({
     reducerPath:'shopApi',
     baseQuery: fetchBaseQuery({baseUrl: firebaseRTDBUrl}),

@@ -1,1 +1,0 @@
-export const firebaseRTDBUrl = 'https://mundo-geek-74035-p-default-rtdb.firebaseio.com/'
