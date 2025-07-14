@@ -4,35 +4,57 @@ import { useEffect, useState } from 'react';
 import { useLoginMutation } from '../../services/authService';
 import { setUser } from '../../features/user/userSlice';
 import { useDispatch } from 'react-redux';
+import { loginSchema } from '../../validations/yupSchema';
 
 const textInputWidth = Dimensions.get('window').width * 0.7
 
-const LoginScreen = ({navigation,route}) => {
+const LoginScreen = ({ navigation, route }) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [triggerLogin,result] = useLoginMutation()
-    const {message} = route.params || ""
+    const [triggerLogin, result] = useLoginMutation()
+    const [errorEmail, setErrorEmail] = useState("")
+    const [errorPassword, setErrorPassword] = useState("")
+    const { message } = route.params || ""
+
     const dispatch = useDispatch()
 
-    useEffect(()=>{
-        if(result.status==="fulfilled"){
+    useEffect(() => {
+        if (result.status === "fulfilled") {
             console.log("Sesión iniciada exitosamente")
             dispatch(setUser(result.data.email))
-        }else{
-            console.log("Hubo un error al crear el usuario")
+        } else {
+            console.log("Hubo un error al iniciar sesión")
         }
-    },[result])
+    }, [result])
 
 
-    const onsubmit = ()=>{
-        triggerLogin({email,password})       
+    const onsubmit = () => {
+        try {
+            loginSchema.validateSync({ email, password })
+            setErrorEmail("")
+            setErrorPassword("")
+            triggerLogin({ email, password })
+        } catch (error) {
+            switch (error.path) {
+                case "email":
+                    //console.log(error.message)
+                    setErrorEmail(error.message)
+                    break
+                case "password":
+                    //console.log(error.message)
+                    setErrorPassword(error.message)
+                    break
+                default:
+                    break
+            }
+        }
     }
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Mundo Geek</Text>
             {
-                message&&<Text style={styles.whiteText}>{message}</Text>
+                message && <Text style={styles.whiteText}>{message}</Text>
             }
             <Text style={styles.subTitle}>Inicia sesión</Text>
             <View style={styles.inputContainer}>
@@ -42,6 +64,7 @@ const LoginScreen = ({navigation,route}) => {
                     placeholder="Email"
                     style={styles.textInput}
                 />
+                {(errorEmail && !errorPassword) && <Text style={styles.error}>{errorEmail}</Text>}
                 <TextInput
                     onChangeText={(text) => setPassword(text)}
                     placeholderTextColor={colors.white}
@@ -49,7 +72,7 @@ const LoginScreen = ({navigation,route}) => {
                     style={styles.textInput}
                     secureTextEntry
                 />
-
+                {errorPassword && <Text style={styles.error}>{errorPassword}</Text>}
             </View>
             <View style={styles.footTextContainer}>
                 <Text style={styles.whiteText}>¿No tienes una cuenta?</Text>
@@ -77,7 +100,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor:colors.purple
+        backgroundColor: colors.purple
     },
     title: {
         color: colors.neonGreen,
@@ -131,5 +154,11 @@ const styles = StyleSheet.create({
         color: colors.white,
         fontSize: 16,
         fontWeight: '700'
+    },
+    error: {
+        padding:16,
+        backgroundColor:colors.red,
+        borderRadius:8,
+        color: colors.white
     }
 })

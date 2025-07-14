@@ -1,31 +1,61 @@
- import { StyleSheet, Text, View, TextInput, Pressable, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Pressable, Dimensions } from 'react-native'
 import { colors } from '../../global/colors'
 import { useEffect, useState } from 'react';
 import { useSignupMutation } from '../../services/authService';
+import { signupSchema } from '../../validations/yupSchema';
 
 
 const textInputWidth = Dimensions.get('window').width * 0.7
 
-const SignupScreen = ({navigation}) => {
+const SignupScreen = ({ navigation }) => {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     const [triggerSignUp, result] = useSignupMutation()
 
-    useEffect(()=>{
-        if(result.status==="fulfilled"){
+    const [errorEmail, setErrorEmail] = useState("")
+    const [errorPassword, setErrorPassword] = useState("")
+    const [errorConfirmPassword, setErrorConfirmPassword] = useState("")
+
+    useEffect(() => {
+        if (result.status === "fulfilled") {
             console.log("Usuario creado exitosamente")
-            navigation.navigate("Login",{message:"Usuario creado con éxito"})
-        }else{
+            navigation.navigate("Login", { message: "Usuario creado con éxito" })
+        } else if(result.status === "rejected") {
             console.log("Hubo un error al crear el usuario")
         }
         //console.log(result)
-    },[result])
+    }, [result])
 
-    const onsubmit = ()=>{
-        console.log(email,password,confirmPassword)
-        triggerSignUp({email,password})
+    const onsubmit = () => {
+        //console.log(email, password, confirmPassword)
+        try {
+            signupSchema.validateSync({ email, password, confirmPassword })
+            setErrorEmail("")
+            setErrorPassword("")
+            setErrorConfirmPassword("")
+            triggerSignUp({ email, password })
+        } catch (error) {
+            switch (error.path) {
+                case "email":
+                    //console.log(error.message)
+                    setErrorEmail(error.message)
+                    break
+                case "password":
+                    //console.log(error.message)
+                    setErrorPassword(error.message)
+                    break
+                case "confirmPassword":
+                    //console.log(error.message)
+                    setErrorConfirmPassword(error.message)
+                    break
+                default:
+                    break
+            }
+        }
+
+        triggerSignUp({ email, password })
         //console.log(result)
     }
 
@@ -40,6 +70,7 @@ const SignupScreen = ({navigation}) => {
                     placeholder="Email"
                     style={styles.textInput}
                 />
+                {(errorEmail && !errorPassword) && <Text style={styles.error}>{errorEmail}</Text>}
                 <TextInput
                     onChangeText={(text) => setPassword(text)}
                     placeholderTextColor={colors.white}
@@ -47,6 +78,7 @@ const SignupScreen = ({navigation}) => {
                     style={styles.textInput}
                     secureTextEntry
                 />
+                {errorPassword && <Text style={styles.error}>{errorPassword}</Text>}
                 <TextInput
                     onChangeText={(text) => setConfirmPassword(text)}
                     placeholderTextColor={colors.white}
@@ -54,6 +86,7 @@ const SignupScreen = ({navigation}) => {
                     style={styles.textInput}
                     secureTextEntry
                 />
+                {errorConfirmPassword && <Text style={styles.error}>{errorConfirmPassword}</Text>}
             </View>
             <View style={styles.footTextContainer}>
                 <Text style={styles.whiteText}>¿Ya tienes una cuenta?</Text>
@@ -82,7 +115,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor:colors.purple
+        backgroundColor: colors.purple
     },
     title: {
         color: colors.neonGreen,
@@ -136,5 +169,11 @@ const styles = StyleSheet.create({
         color: colors.white,
         fontSize: 16,
         fontWeight: '700'
+    },
+    error: {
+        padding:16,
+        backgroundColor:colors.red,
+        borderRadius:8,
+        color: colors.white
     }
 })
