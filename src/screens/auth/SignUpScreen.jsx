@@ -22,20 +22,20 @@ const SignupScreen = ({navigation}) => {
             <View style={styles.inputContainer}>
                 <TextInput
                     onChangeText={(text) => setEmail(text)}
-                    placeholderTextColor="#EBEBEB"
+                    placeholderTextColor={colors.white}
                     placeholder="Email"
                     style={styles.textInput}
                 />
                 <TextInput
                     onChangeText={(text) => setPassword(text)}
-                    placeholderTextColor="#EBEBEB"
+                    placeholderTextColor={colors.white}
                     placeholder='Password'
                     style={styles.textInput}
                     secureTextEntry
                 />
                 <TextInput
                     onChangeText={(text) => setConfirmPassword(text)}
-                    placeholderTextColor="#EBEBEB"
+                    placeholderTextColor={colors.white}
                     placeholder='Repetir password'
                     style={styles.textInput}
                     secureTextEntry
@@ -67,17 +67,18 @@ const styles = StyleSheet.create({
     gradient: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor:colors.purple
     },
     title: {
-        color: colors.verdeNeon,
+        color: colors.neonGreen,
         fontFamily: "PressStart2P",
         fontSize: 24
     },
     subTitle: {
         fontFamily: "Montserrat",
         fontSize: 18,
-        color: colors.amarillo,
+        color: colors.yellow,
         fontWeight: '700',
         letterSpacing: 3
     },
@@ -92,16 +93,16 @@ const styles = StyleSheet.create({
         padding: 8,
         paddingLeft: 16,
         borderRadius: 16,
-        backgroundColor: "#95859E",
+        backgroundColor: colors.darkGray,
         width: textInputWidth,
-        color: colors.blanco,
+        color: colors.white,
     },
     footTextContainer: {
         flexDirection: 'row',
         gap: 8,
     },
     whiteText: {
-        color: colors.blanco
+        color: colors.white
     },
     underLineText: {
         textDecorationLine: 'underline',
@@ -113,12 +114,12 @@ const styles = StyleSheet.create({
     btn: {
         padding: 16,
         paddingHorizontal: 32,
-        backgroundColor: colors.morado,
+        backgroundColor: colors.black,
         borderRadius: 16,
         marginTop: 32
     },
     btnText: {
-        color: colors.blanco,
+        color: colors.white,
         fontSize: 16,
         fontWeight: '700'
     }
