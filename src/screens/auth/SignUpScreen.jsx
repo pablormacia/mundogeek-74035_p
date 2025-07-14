@@ -14,7 +14,13 @@ const SignupScreen = ({navigation}) => {
     const [triggerSignUp, result] = useSignupMutation()
 
     useEffect(()=>{
-        console.log(result)
+        if(result.status==="fulfilled"){
+            console.log("Usuario creado exitosamente")
+            navigation.navigate("Login",{message:"Usuario creado con éxito"})
+        }else{
+            console.log("Hubo un error al crear el usuario")
+        }
+        //console.log(result)
     },[result])
 
     const onsubmit = ()=>{

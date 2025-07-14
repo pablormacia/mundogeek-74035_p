@@ -1,21 +1,39 @@
 import { StyleSheet, Text, View, TextInput, Pressable, Dimensions } from 'react-native'
 import { colors } from '../../global/colors';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLoginMutation } from '../../services/authService';
+import { setUser } from '../../features/user/userSlice';
+import { useDispatch } from 'react-redux';
 
 const textInputWidth = Dimensions.get('window').width * 0.7
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({navigation,route}) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [triggerLogin,result] = useLoginMutation()
+    const {message} = route.params || ""
+    const dispatch = useDispatch()
+
+    useEffect(()=>{
+        if(result.status==="fulfilled"){
+            console.log("Sesión iniciada exitosamente")
+            dispatch(setUser(result.data.email))
+        }else{
+            console.log("Hubo un error al crear el usuario")
+        }
+    },[result])
 
 
     const onsubmit = ()=>{
-        console.log(email,password)       
+        triggerLogin({email,password})       
     }
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Mundo Geek</Text>
+            {
+                message&&<Text style={styles.whiteText}>{message}</Text>
+            }
             <Text style={styles.subTitle}>Inicia sesión</Text>
             <View style={styles.inputContainer}>
                 <TextInput

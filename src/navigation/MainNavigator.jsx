@@ -1,15 +1,15 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { useState } from 'react';
 import AuthStackNavigator from './AuthStackNavigator';
 import TabsNavigator from './TabsNavigator';
+import { useSelector } from 'react-redux';
 
 
 export default function MainNavigator() {
-    const [user, setUser] = useState("")
+    const userEmail= useSelector(state=>state.userReducer.email)
     return (
         <NavigationContainer>
             {
-                user ? <TabsNavigator /> : <AuthStackNavigator />
+                userEmail ? <TabsNavigator /> : <AuthStackNavigator />
             }
         </NavigationContainer>
     )
