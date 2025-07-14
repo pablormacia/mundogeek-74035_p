@@ -1,6 +1,7 @@
  import { StyleSheet, Text, View, TextInput, Pressable, Dimensions } from 'react-native'
 import { colors } from '../../global/colors'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSignupMutation } from '../../services/authService';
 
 
 const textInputWidth = Dimensions.get('window').width * 0.7
@@ -10,9 +11,16 @@ const SignupScreen = ({navigation}) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
+    const [triggerSignUp, result] = useSignupMutation()
+
+    useEffect(()=>{
+        console.log(result)
+    },[result])
 
     const onsubmit = ()=>{
         console.log(email,password,confirmPassword)
+        triggerSignUp({email,password})
+        //console.log(result)
     }
 
     return (
