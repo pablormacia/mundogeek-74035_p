@@ -20,8 +20,8 @@ const LoginScreen = ({ navigation, route }) => {
 
     useEffect(() => {
         if (result.status === "fulfilled") {
-            console.log("Sesión iniciada exitosamente")
-            dispatch(setUser(result.data.email))
+            //console.log("Sesión iniciada exitosamente")
+            dispatch(setUser({email:result.data.email,localId: result.data.localId}))
         } else {
             console.log("Hubo un error al iniciar sesión")
         }
