@@ -13,7 +13,9 @@ const userSlice = createSlice({
             state.localId = action.payload.localId
         },
         clearUser: (state,action)=>{
-            state.email = ""
+            state.email = "",
+            state.localId="",
+            state.profileImage=""
         },
         setProfileImage:(state, action) =>{
             state.profileImage = action.payload

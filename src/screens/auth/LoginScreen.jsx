@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View, TextInput, Pressable, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Pressable, Dimensions, Switch } from 'react-native'
 import { colors } from '../../global/colors';
 import { useEffect, useState } from 'react';
 import { useLoginMutation } from '../../services/authService';
 import { setUser } from '../../features/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { loginSchema } from '../../validations/yupSchema';
+import { saveSession, clearSession } from '../../db';
 
 const textInputWidth = Dimensions.get('window').width * 0.7
 
@@ -14,18 +15,36 @@ const LoginScreen = ({ navigation, route }) => {
     const [triggerLogin, result] = useLoginMutation()
     const [errorEmail, setErrorEmail] = useState("")
     const [errorPassword, setErrorPassword] = useState("")
+    const [persistSession, setPersistSession] = useState(false)
     const { message } = route.params || ""
+    console.log("Persistir sesión:", persistSession)
 
     const dispatch = useDispatch()
 
-    useEffect(() => {
+useEffect(() => {
+    const saveLoginSession = async () => {
         if (result.status === "fulfilled") {
-            //console.log("Sesión iniciada exitosamente")
-            dispatch(setUser({email:result.data.email,localId: result.data.localId}))
-        } else {
-            console.log("Hubo un error al iniciar sesión")
+            try {
+                const { localId, email } = result.data;
+
+                if (persistSession) {
+                    await saveSession(localId, email); 
+                } else {
+                    await clearSession();
+                }
+
+                dispatch(setUser({ localId, email }));
+            } catch (error) {
+                console.log("Error al guardar sesión:", error);
+            }
+        } else if (result.status === "rejected") {
+            console.log("Hubo un error al iniciar sesión");
         }
-    }, [result])
+    };
+
+    saveLoginSession();
+}, [result]);
+
 
 
     const onsubmit = () => {
@@ -89,6 +108,15 @@ const LoginScreen = ({ navigation, route }) => {
             </View>
 
             <Pressable style={styles.btn} onPress={onsubmit}><Text style={styles.btnText}>Iniciar sesión</Text></Pressable>
+            <View style={styles.rememberMe}>
+                <Text style={{ color: colors.white }}>¿Mantener sesión iniciada?</Text>
+                <Switch
+                    onValueChange={() => setPersistSession(!persistSession)}
+                    value={persistSession}
+                    trackColor={{ false: '#767577', true: '#81b0ff' }}
+                />
+            </View>
+
         </View>
     )
 }
@@ -156,9 +184,15 @@ const styles = StyleSheet.create({
         fontWeight: '700'
     },
     error: {
-        padding:16,
-        backgroundColor:colors.red,
-        borderRadius:8,
+        padding: 16,
+        backgroundColor: colors.red,
+        borderRadius: 8,
         color: colors.white
+    },
+    rememberMe: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 8
     }
 })
